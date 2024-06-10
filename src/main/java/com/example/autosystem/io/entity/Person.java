@@ -20,8 +20,9 @@ public class Person implements Serializable {
     private String lastName;
     @Column(name = "middle_name",nullable=false)
     private String middleName;
-    @Column(name = "group_name",nullable=false)
-    private String groupName;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "group_id",referencedColumnName = "id")
+    private Group groupId;
     @Column(name = "payment",nullable=false)
     private Integer payment;
     @Column(name = "first_name_p")
@@ -54,12 +55,12 @@ public class Person implements Serializable {
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
-    public Person(Long id, String firstName, String lastName, String middleName, String groupName, Integer payment, String firstNameP, String lastNameP, String middleNameP, Date birthday, Integer number, Integer numberP, Date registered, String infoChannel, String school, String address, Integer height, Integer weight, Boolean status, Trainer trainer) {
+    public Person(Long id, String firstName, String lastName, String middleName, Group groupId, Integer payment, String firstNameP, String lastNameP, String middleNameP, Date birthday, Integer number, Integer numberP, Date registered, String infoChannel, String school, String address, Integer height, Integer weight, Boolean status, Trainer trainer) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.middleName = middleName;
-        this.groupName = groupName;
+        this.groupId = groupId;
         this.payment = payment;
         this.firstNameP = firstNameP;
         this.lastNameP = lastNameP;
@@ -77,7 +78,7 @@ public class Person implements Serializable {
         this.trainer = trainer;
     }
 
-    public Person(String firstName, String lastName, String middleName, String groupName, Integer payment, String firstNameP, String lastNameP, String middleNameP, Date birthday, Integer number, Integer numberP, Date registered, String infoChannel, String school, String address, Integer height, Integer weight, Boolean status, Trainer trainer) {
+    public Person(String firstName, String lastName, String middleName, Group groupId, Integer payment, String firstNameP, String lastNameP, String middleNameP, Date birthday, Integer number, Integer numberP, Date registered, String infoChannel, String school, String address, Integer height, Integer weight, Boolean status, Trainer trainer) {
     }
     public Person() {
     }
@@ -114,12 +115,12 @@ public class Person implements Serializable {
         this.middleName = middleName;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public Group getGroupId() {
+        return groupId;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupId(Group groupId) {
+        this.groupId = groupId;
     }
 
     public Integer getPayment() {

@@ -21,6 +21,10 @@ public class Trainer implements Serializable {
     private String password;
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<Person> personList = new ArrayList<>();
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
+    private List<Group> groupList = new ArrayList<>();
+
+
 
     public Trainer(String login, String password, List<Person> personList) {
         this.login = login;
@@ -28,12 +32,21 @@ public class Trainer implements Serializable {
         this.personList = personList;
     }
 
+
     public Trainer() {
     }
 
     public Trainer(String login, String password) {
         this.login = login;
         this.password = password;
+    }
+
+    public List<Group> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(List<Group> groupList) {
+        this.groupList = groupList;
     }
 
     public Long getId() {

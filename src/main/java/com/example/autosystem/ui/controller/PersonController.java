@@ -1,6 +1,7 @@
 package com.example.autosystem.ui.controller;
 
 import com.example.autosystem.io.PersonRepository;
+import com.example.autosystem.io.entity.Group;
 import com.example.autosystem.io.entity.Person;
 import com.example.autosystem.io.entity.Trainer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,25 @@ public class PersonController {
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
         try {
             Person _person = personRepository
-                    .save(new Person(person.getFirstName(), person.getLastName(), person.getMiddleName(), person.getGroupName(), person.getPayment(), person.getFirstNameP(), person.getLastNameP(), person.getMiddleNameP(), person.getBirthday(), person.getNumber(), person.getNumberP(), person.getRegistered(), person.getInfoChannel(), person.getSchool(), person.getAddress(), person.getHeight(), person.getWeight(), person.getStatus(), person.getTrainer()));
+                    .save(new Person(person.getFirstName(),
+                            person.getLastName(),
+                            person.getMiddleName(),
+                            person.getGroupId(),
+                            person.getPayment(),
+                            person.getFirstNameP(),
+                            person.getLastNameP(),
+                            person.getMiddleNameP(),
+                            person.getBirthday(),
+                            person.getNumber(),
+                            person.getNumberP(),
+                            person.getRegistered(),
+                            person.getInfoChannel(),
+                            person.getSchool(),
+                            person.getAddress(),
+                            person.getHeight(),
+                            person.getWeight(),
+                            person.getStatus(),
+                            person.getTrainer()));
             return new ResponseEntity<>(_person, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,7 +95,7 @@ public class PersonController {
             _person.setFirstName(person.getFirstName());
             _person.setLastName(person.getLastName());
             _person.setMiddleName(person.getMiddleName());
-            _person.setGroupName(person.getGroupName());
+            _person.setGroupId(person.getGroupId());
             _person.setPayment(person.getPayment());
             _person.setFirstNameP(person.getFirstNameP());
             _person.setLastNameP(person.getLastNameP());
@@ -98,11 +117,11 @@ public class PersonController {
         }
     }
     @PutMapping("/person/{id}/group")
-    public ResponseEntity<Person> updatePersonGroup(@RequestParam @PathVariable Long id, @RequestParam String groupName) {
+    public ResponseEntity<Person> updatePersonGroup(@RequestParam @PathVariable Long id, @RequestParam Group groupId) {
         Optional<Person> personData = personRepository.findById(id);
         if (personData.isPresent()) {
             Person _person = personData.get();
-            _person.setGroupName(groupName);
+            _person.setGroupId(groupId);
             return new ResponseEntity<>(personRepository.save(_person), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
