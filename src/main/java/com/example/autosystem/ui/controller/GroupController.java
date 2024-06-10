@@ -47,6 +47,15 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/group/{groupName}")
+    public ResponseEntity<Group> getGroupByGroupName(@PathVariable String groupName) {
+        try {
+            Group group = groupRepository.findByName(groupName);
+            return new ResponseEntity<>(group, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 }

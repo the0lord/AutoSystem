@@ -1,4 +1,4 @@
 package com.example.autosystem.service;
 
-public class TrainerService {
+public interface TrainerService {
 }

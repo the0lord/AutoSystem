@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity(name = "group")
+@Entity(name = "_group")
 public class Group implements Serializable {
     @Serial
     private static final long serialVersionUID = 3114901492903644372L;
@@ -15,7 +15,7 @@ public class Group implements Serializable {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @OneToOne(mappedBy = "group")
+    @OneToOne
     private Person person;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trainer_id",nullable = false)

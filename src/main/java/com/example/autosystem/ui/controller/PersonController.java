@@ -1,5 +1,6 @@
 package com.example.autosystem.ui.controller;
 
+import com.example.autosystem.io.GroupRepository;
 import com.example.autosystem.io.PersonRepository;
 import com.example.autosystem.io.entity.Group;
 import com.example.autosystem.io.entity.Person;
@@ -18,15 +19,18 @@ import java.util.Optional;
 public class PersonController {
     @Autowired
     PersonRepository personRepository;
+    @Autowired
+    GroupRepository groupRepository;
 
     @GetMapping("/persons")
-    public ResponseEntity<List<Person>> getAllPersons(@RequestParam(required = false) String groupName) {
+    public ResponseEntity<List<Person>> getAllPersons(@RequestParam(required = false) String name,Long id) {
         try {
             List<Person> persons = new ArrayList<Person>();
-            if (groupName == null)
+            if (name == null)
                 personRepository.findAll().forEach(persons::add);
             else
-                personRepository.findByGroupName(groupName).forEach(persons::add);
+
+                personRepository.findByGroupId(groupRepository.getById(id)).forEach(persons::add);
             if (persons.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

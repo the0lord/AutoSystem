@@ -1,4 +1,5 @@
 package com.example.autosystem.service;
 
-public interface PersonService {
+public interface GroupService {
+
 }

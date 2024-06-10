@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    Group findByGroupName(String groupName);
-    Group findByGroupId(Long id);
+    Group findByName(String groupName);
+
 }
