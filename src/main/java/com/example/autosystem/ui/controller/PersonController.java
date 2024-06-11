@@ -27,10 +27,10 @@ public class PersonController {
         try {
             List<Person> persons = new ArrayList<Person>();
             if (name == null)
-                personRepository.findAll().forEach(persons::add);
+                persons.addAll(personRepository.findAll());
             else
 
-                personRepository.findByGroupId(groupRepository.getById(id)).forEach(persons::add);
+                persons.addAll(personRepository.findByGroupId(groupRepository.getById(id)));
             if (persons.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }

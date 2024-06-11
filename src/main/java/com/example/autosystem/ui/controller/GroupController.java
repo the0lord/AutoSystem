@@ -19,7 +19,7 @@ public class GroupController {
     public ResponseEntity<List<Group>> getAllGroups() {
         try {
             List<Group> groups = new ArrayList<Group>();
-            groupRepository.findAll().forEach(groups::add);
+            groups.addAll(groupRepository.findAll());
             if (groups.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -52,6 +52,35 @@ public class GroupController {
         try {
             Group group = groupRepository.findByName(groupName);
             return new ResponseEntity<>(group, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/group")
+    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
+        try {
+            Group _group = groupRepository
+                    .save(new Group(group.getName()));
+            return new ResponseEntity<>(_group, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PutMapping("/group/{id}")
+    public ResponseEntity<Group> updateGroupPerson(@PathVariable Long id, @RequestBody Group group) {
+        Group _group = groupRepository.findById(id).get();
+        if (_group != null) {
+            _group.setPerson(group.getPerson());
+            return new ResponseEntity<>(groupRepository.save(_group), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/group/{id}")
+    public ResponseEntity<HttpStatus> deleteGroup(@PathVariable Long id) {
+        try {
+            groupRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

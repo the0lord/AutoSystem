@@ -21,6 +21,19 @@ public class Group implements Serializable {
     @JoinColumn(name = "trainer_id",nullable = false)
     private Trainer trainer;
 
+    public Group(String name) {
+    }
+
+    public Group() {
+
+    }
+
+    public Group(String name, Person person, Trainer trainer) {
+        this.name = name;
+        this.person = person;
+        this.trainer = trainer;
+    }
+
     public Trainer getTrainer() {
         return trainer;
     }

@@ -1,5 +1,17 @@
 package com.example.autosystem.service;
 
-public interface GroupService {
+import com.example.autosystem.io.entity.Group;
+import com.example.autosystem.shared.dto.GroupDto;
+import com.example.autosystem.shared.dto.TrainerDto;
 
+import java.util.List;
+
+public interface GroupService {
+    List<GroupDto> getAllGroups();
+    GroupDto getGroupById(Long groupId);
+    GroupDto createGroup(GroupDto groupDto);
+    GroupDto updateGroupTrainer(Long groupId, GroupDto groupDto, TrainerDto trainerId);
+    GroupDto updateGroupName(Long groupId, GroupDto groupDto);
+    void deleteGroup(Long groupId);
+    GroupDto updateGroupPerson(Group groupId, GroupDto groupDto);
 }
