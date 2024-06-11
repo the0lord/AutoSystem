@@ -55,4 +55,13 @@ public class TrainerController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/trainers/{login}")
+    public ResponseEntity<Trainer> getTrainerByLogin(@PathVariable String login) {
+        try {
+            Trainer trainer = trainerRepository.findByLogin(login);
+            return new ResponseEntity<>(trainer, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
