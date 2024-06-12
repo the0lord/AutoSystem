@@ -10,8 +10,8 @@ public interface GroupService {
     List<GroupDto> getAllGroups();
     GroupDto getGroupById(Long groupId);
     GroupDto createGroup(GroupDto groupDto);
-    GroupDto updateGroupTrainer(Long groupId, GroupDto groupDto, TrainerDto trainerId);
+    GroupDto updateGroupTrainer(Long groupId, GroupDto groupDto);
     GroupDto updateGroupName(Long groupId, GroupDto groupDto);
     void deleteGroup(Long groupId);
-    GroupDto updateGroupPerson(Group groupId, GroupDto groupDto);
+    GroupDto updateGroupPerson(Long groupId, GroupDto groupDto);
 }

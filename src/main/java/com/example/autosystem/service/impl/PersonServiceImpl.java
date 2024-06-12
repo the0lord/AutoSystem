@@ -164,8 +164,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDto getPersonByTrainerId(TrainerDto trainerId) {
-        PersonDto returnValue = new PersonDto();
+    public List<PersonDto> getPersonByTrainerId(TrainerDto trainerId) {
+        List<PersonDto> returnValue = new ArrayList<>();
         Optional<Trainer> trainer = trainerRepository.findById(trainerId.getId());
         List<Person> person = personRepository.findByTrainer(trainer.get());
         if (person.isEmpty()) {
@@ -178,8 +178,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public PersonDto getPersonsByStatus() {
-        PersonDto returnValue = new PersonDto();
+    public List<PersonDto> getPersonsByStatus() {
+        List<PersonDto> returnValue = new ArrayList<>();
         List<Person> person = personRepository.findByStatus(true);
         if (person.isEmpty()) {
             throw new RuntimeException("Person doesn't exists");

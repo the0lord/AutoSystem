@@ -17,8 +17,8 @@ public interface PersonService {
     void deletePerson(Long personId);
     PersonDto updatePersonStatus(Long personId, PersonDto personDto);
     void deleteAllPersons();
-    PersonDto getPersonByTrainerId(TrainerDto trainerId);
-    PersonDto getPersonsByStatus();
+    List<PersonDto> getPersonByTrainerId(TrainerDto trainerId);
+    List<PersonDto> getPersonsByStatus();
 
 
 }

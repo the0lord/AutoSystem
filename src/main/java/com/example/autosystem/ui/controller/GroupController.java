@@ -2,6 +2,9 @@ package com.example.autosystem.ui.controller;
 
 import com.example.autosystem.io.GroupRepository;
 import com.example.autosystem.io.entity.Group;
+import com.example.autosystem.service.GroupService;
+import com.example.autosystem.shared.dto.GroupDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,81 +12,57 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/")
 public class GroupController {
     @Autowired
-    GroupRepository groupRepository;
+    GroupService groupService;
     @GetMapping("/groups")
-    public ResponseEntity<List<Group>> getAllGroups() {
-        try {
-            List<Group> groups = new ArrayList<Group>();
-            groups.addAll(groupRepository.findAll());
-            if (groups.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(groups, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<GroupDto> getAllGroups() {
+        return groupService.getAllGroups();
     }
     @GetMapping("/group/{id}")
-    public ResponseEntity<Group> getGroupById(@PathVariable Long id) {
-        try {
-            Group group = groupRepository.findById(id).get();
-            return new ResponseEntity<>(group, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public GroupDto getGroupById(@PathVariable Long id) {
+        return groupService.getGroupById(id);
     }
     @PutMapping("/group/trainer/{id}")
-    public ResponseEntity<Group> updateGroupTrainer(@PathVariable Long id, @RequestBody Group group) {
-        Group _group = groupRepository.findById(id).get();
-        if (_group != null) {
-            _group.setTrainer(group.getTrainer());
-            return new ResponseEntity<>(groupRepository.save(_group), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public GroupDto updateGroupTrainer(@PathVariable Long id, @RequestBody Group group) {
+        GroupDto groupDto;
+        ModelMapper modelMapper = new ModelMapper();
+        groupDto = modelMapper.map(group, GroupDto.class);
+        return groupService.updateGroupTrainer(id, groupDto);
     }
-    @GetMapping("/group/{groupName}")
-    public ResponseEntity<Group> getGroupByGroupName(@PathVariable String groupName) {
-        try {
-            Group group = groupRepository.findByName(groupName);
-            return new ResponseEntity<>(group, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PutMapping("/group/name{id}")
+    public GroupDto updateGroupName(@PathVariable Long id, @RequestBody Group group) {
+        GroupDto groupDto;
+        ModelMapper modelMapper = new ModelMapper();
+        groupDto = modelMapper.map(group, GroupDto.class);
+        return groupService.updateGroupName(id, groupDto);
     }
     @PostMapping("/group")
-    public ResponseEntity<Group> createGroup(@RequestBody Group group) {
-        try {
-            Group _group = groupRepository
-                    .save(new Group(group.getName()));
-            return new ResponseEntity<>(_group, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    public GroupDto createGroup(@RequestBody Group group) {
+        GroupDto groupDto;
+        if (group.getName() != null) {
+            ModelMapper modelMapper = new ModelMapper();
+            groupDto = modelMapper.map(group, GroupDto.class);
+            return groupService.createGroup(groupDto);
+        } else {
+            return null;
         }
     }
     @PutMapping("/group/person/{id}")
-    public ResponseEntity<Group> updateGroupPerson(@PathVariable Long id, @RequestBody Group group) {
-        Group _group = groupRepository.findById(id).get();
-        if (_group != null) {
-            _group.setPerson(group.getPerson());
-            return new ResponseEntity<>(groupRepository.save(_group), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public GroupDto updateGroupPerson(@PathVariable Long id, @RequestBody Group group) {
+        GroupDto groupDto;
+        ModelMapper modelMapper = new ModelMapper();
+        groupDto = modelMapper.map(group, GroupDto.class);
+        return groupService.updateGroupPerson(id, groupDto);
     }
     @DeleteMapping("/group/{id}")
-    public ResponseEntity<HttpStatus> deleteGroup(@PathVariable Long id) {
-        try {
-            groupRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public GroupDto deleteGroup(@PathVariable Long id) {
+        groupService.deleteGroup(id);
+        return null;
     }
 
 

@@ -5,6 +5,12 @@ import com.example.autosystem.io.PersonRepository;
 import com.example.autosystem.io.entity.Group;
 import com.example.autosystem.io.entity.Person;
 import com.example.autosystem.io.entity.Trainer;
+import com.example.autosystem.service.GroupService;
+import com.example.autosystem.service.PersonService;
+import com.example.autosystem.shared.dto.GroupDto;
+import com.example.autosystem.shared.dto.PersonDto;
+import com.example.autosystem.shared.dto.TrainerDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,171 +24,77 @@ import java.util.Optional;
 @RequestMapping("api/v1/")
 public class PersonController {
     @Autowired
-    PersonRepository personRepository;
+    PersonService personService;
     @Autowired
-    GroupRepository groupRepository;
+    GroupService groupService;
 
     @GetMapping("/persons")
-    public ResponseEntity<List<Person>> getAllPersons(@RequestParam(required = false) String name,Long id) {
-        try {
-            List<Person> persons = new ArrayList<Person>();
-            if (name == null)
-                persons.addAll(personRepository.findAll());
-            else
-
-                persons.addAll(personRepository.findByGroupId(groupRepository.getById(id)));
-            if (persons.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(persons, HttpStatus.OK);
-
-            } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }
+    public List<PersonDto> getAllPersons(@RequestParam(required = false) GroupDto name, Long id) {
+        return personService.getAllPersons(name, id);
     }
-    @GetMapping("/personn")
-    public ResponseEntity<List<Person>> getPersonsByFirstNameAndLastNameAndMiddleName(String firstName, String lastName, String middleName) {
-        try {
-            List<Person> persons = personRepository.findByFirstNameAndLastNameAndMiddleName(firstName, lastName, middleName);
-            if (persons.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(persons, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/person/full_name")
+    public PersonDto getPersonsByFirstNameAndLastNameAndMiddleName(String firstName, String lastName, String middleName) {
+        return personService.getPersonsByFirstNameAndLastNameAndMiddleName(firstName, lastName, middleName);
 
     }
     @GetMapping("/person/{id}")
-    public ResponseEntity<Person> getPersonById(@RequestParam @PathVariable Long id) {
-        try {
-            Person person = personRepository.findById(id).get();
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public PersonDto getPersonById(@RequestParam @PathVariable Long id) {
+        return personService.getPersonById(id);
     }
     @PostMapping("/persons")
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        try {
-            Person _person = personRepository
-                    .save(new Person(person.getFirstName(),
-                            person.getLastName(),
-                            person.getMiddleName(),
-                            person.getGroupId(),
-                            person.getPayment(),
-                            person.getFirstNameP(),
-                            person.getLastNameP(),
-                            person.getMiddleNameP(),
-                            person.getBirthday(),
-                            person.getNumber(),
-                            person.getNumberP(),
-                            person.getRegistered(),
-                            person.getInfoChannel(),
-                            person.getSchool(),
-                            person.getAddress(),
-                            person.getHeight(),
-                            person.getWeight(),
-                            person.getStatus(),
-                            person.getTrainer()));
-            return new ResponseEntity<>(_person, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    public PersonDto createPerson(@RequestBody Person person) {
+        PersonDto personDto;
+        if (person.getFirstName() != null && person.getLastName() != null && person.getMiddleName() != null) {
+            ModelMapper modelMapper = new ModelMapper();
+            personDto = modelMapper.map(person, PersonDto.class);
+            return personService.createPerson(personDto);
+        } else {
+            return null;
         }
+
     }
     @PutMapping("/person/{id}")
-    public ResponseEntity<Person> updatePersonAllInfo(@RequestBody Person person, @PathVariable Long id) {
-        Optional<Person> personData = personRepository.findById(id);
-        if (personData.isPresent()) {
-            Person _person = personData.get();
-            _person.setFirstName(person.getFirstName());
-            _person.setLastName(person.getLastName());
-            _person.setMiddleName(person.getMiddleName());
-            _person.setGroupId(person.getGroupId());
-            _person.setPayment(person.getPayment());
-            _person.setFirstNameP(person.getFirstNameP());
-            _person.setLastNameP(person.getLastNameP());
-            _person.setMiddleNameP(person.getMiddleNameP());
-            _person.setBirthday(person.getBirthday());
-            _person.setNumber(person.getNumber());
-            _person.setNumberP(person.getNumberP());
-            _person.setRegistered(person.getRegistered());
-            _person.setInfoChannel(person.getInfoChannel());
-            _person.setSchool(person.getSchool());
-            _person.setAddress(person.getAddress());
-            _person.setHeight(person.getHeight());
-            _person.setWeight(person.getWeight());
-            _person.setStatus(person.getStatus());
-            _person.setTrainer(person.getTrainer());
-            return new ResponseEntity<>(personRepository.save(_person), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public PersonDto updatePersonAllInfo(@RequestBody Person person, @PathVariable Long id) {
+        PersonDto personDto;
+        ModelMapper modelMapper = new ModelMapper();
+        personDto = modelMapper.map(person, PersonDto.class);
+        return personService.updatePersonAllInfo(id, personDto);
     }
     @PutMapping("/person/{id}/group")
-    public ResponseEntity<Person> updatePersonGroup(@RequestParam @PathVariable Long id, @RequestParam Group groupId) {
-        Optional<Person> personData = personRepository.findById(id);
-        if (personData.isPresent()) {
-            Person _person = personData.get();
-            _person.setGroupId(groupId);
-            return new ResponseEntity<>(personRepository.save(_person), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public PersonDto updatePersonGroup(@RequestParam @PathVariable Long id, @RequestParam Group groupId) {
+        PersonDto personDto;
+        ModelMapper modelMapper = new ModelMapper();
+        personDto = modelMapper.map(groupId, PersonDto.class);
+        return personService.updatePersonGroup(id, personDto);
+
     }
     @DeleteMapping("/person/{id}")
-    public ResponseEntity<HttpStatus> deletePerson(@RequestParam @PathVariable Long id) {
-        try {
-            personRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public PersonDto deletePerson(@RequestParam @PathVariable Long id) {
+        personService.deletePerson(id);
+        return null;
     }
     @PutMapping("/persons/{id}/status")
-    public ResponseEntity<Person> updatePersonStatus(@RequestParam @PathVariable Long id, @RequestParam Boolean status) {
-        Optional<Person> personData = personRepository.findById(id);
-        if (personData.isPresent()) {
-            Person _person = personData.get();
-            _person.setStatus(status);
-            return new ResponseEntity<>(personRepository.save(_person), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public PersonDto updatePersonStatus(@RequestParam @PathVariable Long id, @RequestParam Boolean status) {
+        PersonDto personDto;
+        ModelMapper modelMapper = new ModelMapper();
+        personDto = modelMapper.map(status, PersonDto.class);
+        return personService.updatePersonStatus(id, personDto);
     }
     @DeleteMapping("/persons")
-    public ResponseEntity<HttpStatus> deleteAllPersons() {
-        try {
-            personRepository.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public PersonDto deleteAllPersons() {
+        personService.deleteAllPersons();
+        return null;
     }
     @GetMapping("/persons/trainer")
-    public ResponseEntity<List<Person>> getPersonsByTrainer(Trainer trainer_id) {
-        try {
-            List<Person> persons = personRepository.findByTrainer(trainer_id);
-            if (persons.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(persons, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<PersonDto> getPersonsByTrainerId(Trainer trainerId) {
+        TrainerDto trainerDto;
+        ModelMapper modelMapper = new ModelMapper();
+        trainerDto = modelMapper.map(trainerId, TrainerDto.class);
+        return personService.getPersonByTrainerId(trainerDto);
     }
     @GetMapping("/persons/status")
-    public ResponseEntity<List<Person>> getPersonsByStatus() {
-        try {
-            List<Person> persons = personRepository.findByStatus(true);
-            if (persons.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(persons, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<PersonDto> getPersonsByStatus() {
+        return personService.getPersonsByStatus();
     }
 
 }

@@ -66,10 +66,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto updateGroupTrainer(Long groupId, GroupDto groupDto, TrainerDto trainerId) {
+    public GroupDto updateGroupTrainer(Long groupId, GroupDto groupDto) {
         GroupDto returnValue = new GroupDto();
         Optional<Group> group = groupRepository.findById(groupId);
-        Optional<Trainer> trainer = trainerRepository.findById(trainerId.getId());
+        Optional<Trainer> trainer = trainerRepository.findById(groupDto.getTrainer().getId());
         if (group.isEmpty()) {
             throw new RuntimeException("Group doesn't exists");
         }
@@ -104,10 +104,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto updateGroupPerson(Group groupId, GroupDto groupDto) {
+    public GroupDto updateGroupPerson(Long groupId, GroupDto groupDto) {
         GroupDto returnValue = new GroupDto();
-        Optional<Group> group = groupRepository.findById(groupId.getId());
-        List<Person> person = personRepository.findByGroupId(groupId);
+        Optional<Group> group = groupRepository.findById(groupId);
+        List<Person> person = personRepository.findByGroupId(group.get().getPerson().getGroupId());
         if (group.isEmpty()) {
             throw new RuntimeException("Group doesn't exists");
         }
