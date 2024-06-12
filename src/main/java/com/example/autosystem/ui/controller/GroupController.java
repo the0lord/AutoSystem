@@ -37,7 +37,7 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping("/group/{id}")
+    @PutMapping("/group/trainer/{id}")
     public ResponseEntity<Group> updateGroupTrainer(@PathVariable Long id, @RequestBody Group group) {
         Group _group = groupRepository.findById(id).get();
         if (_group != null) {
@@ -66,7 +66,7 @@ public class GroupController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping("/group/{id}")
+    @PutMapping("/group/person/{id}")
     public ResponseEntity<Group> updateGroupPerson(@PathVariable Long id, @RequestBody Group group) {
         Group _group = groupRepository.findById(id).get();
         if (_group != null) {
