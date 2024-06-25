@@ -1,10 +1,15 @@
 package com.example.autosystem.io.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-
+import java.util.ArrayList;
+import java.util.List;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "_group")
 public class Group implements Serializable {
     @Serial
@@ -15,56 +20,13 @@ public class Group implements Serializable {
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
-    @OneToOne
-    private Person person;
+    @OneToMany(mappedBy = "groupId", cascade = CascadeType.ALL)
+    private List<Person> personList  = new ArrayList<>();
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "trainer_id",nullable = false)
     private Trainer trainer;
 
-    public Group(String name) {
-    }
 
-    public Group() {
-
-    }
-
-    public Group(String name, Person person, Trainer trainer) {
-        this.name = name;
-        this.person = person;
-        this.trainer = trainer;
-    }
-
-    public Trainer getTrainer() {
-        return trainer;
-    }
-
-    public void setTrainer(Trainer trainer) {
-        this.trainer = trainer;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
 
 }

@@ -1,4 +1,4 @@
-package com.example.autosystem.io;
+package com.example.autosystem.io.repository;
 
 import com.example.autosystem.io.entity.Group;
 import com.example.autosystem.io.entity.Person;
@@ -13,7 +13,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     List<Person> findByFirstNameAndLastNameAndMiddleName(String firstName, String lastName, String middleName);
     List<Person> findByGroupId(Group group);
-    List<Person> findByTrainer (Trainer trainerId);
     List<Person> findByStatus (Boolean status);
 
 

@@ -1,18 +1,13 @@
 package com.example.autosystem.ui.controller;
 
-import com.example.autosystem.io.GroupRepository;
 import com.example.autosystem.io.entity.Group;
 import com.example.autosystem.service.GroupService;
 import com.example.autosystem.shared.dto.GroupDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/")
@@ -42,11 +37,9 @@ public class GroupController {
         return groupService.updateGroupName(id, groupDto);
     }
     @PostMapping("/group")
-    public GroupDto createGroup(@RequestBody Group group) {
-        GroupDto groupDto;
-        if (group.getName() != null) {
-            ModelMapper modelMapper = new ModelMapper();
-            groupDto = modelMapper.map(group, GroupDto.class);
+    public GroupDto createGroup(@RequestBody GroupDto groupDto) {
+        if (groupDto.getName() != null) {
+
             return groupService.createGroup(groupDto);
         } else {
             return null;

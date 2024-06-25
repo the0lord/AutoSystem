@@ -1,12 +1,14 @@
 package com.example.autosystem.service.impl;
 
-import com.example.autosystem.io.TrainerRepository;
+import com.example.autosystem.io.repository.TrainerRepository;
 import com.example.autosystem.io.entity.Trainer;
 import com.example.autosystem.service.TrainerService;
 import com.example.autosystem.shared.dto.TrainerDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -76,5 +78,10 @@ public class TrainerServiceImpl implements TrainerService {
         new ModelMapper().map(trainer, TrainerDto.class);
         BeanUtils.copyProperties(trainer, returnValue);
         return returnValue;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }

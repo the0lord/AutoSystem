@@ -1,18 +1,16 @@
 package com.example.autosystem.service.impl;
 
-import com.example.autosystem.io.GroupRepository;
-import com.example.autosystem.io.PersonRepository;
-import com.example.autosystem.io.TrainerRepository;
+import com.example.autosystem.io.repository.GroupRepository;
+import com.example.autosystem.io.repository.PersonRepository;
+import com.example.autosystem.io.repository.TrainerRepository;
 import com.example.autosystem.io.entity.Group;
 import com.example.autosystem.io.entity.Person;
 import com.example.autosystem.io.entity.Trainer;
 import com.example.autosystem.service.GroupService;
 import com.example.autosystem.shared.dto.GroupDto;
-import com.example.autosystem.shared.dto.TrainerDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -59,7 +57,9 @@ public class GroupServiceImpl implements GroupService {
         if (storedGroup != null) {
             throw new RuntimeException("Group already exists");
         }
+        Optional<Trainer> trainer = trainerRepository.findById(groupDto.getTrainerId());
         Group group = modelMapper.map(groupDto, Group.class);
+        group.setTrainer(trainer.get());
         Group savedGroup = groupRepository.save(group);
         GroupDto returnValue = modelMapper.map(savedGroup, GroupDto.class);
         return returnValue;
@@ -69,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupDto updateGroupTrainer(Long groupId, GroupDto groupDto) {
         GroupDto returnValue = new GroupDto();
         Optional<Group> group = groupRepository.findById(groupId);
-        Optional<Trainer> trainer = trainerRepository.findById(groupDto.getTrainer().getId());
+        Optional<Trainer> trainer = trainerRepository.findById(groupDto.getTrainerId());
         if (group.isEmpty()) {
             throw new RuntimeException("Group doesn't exists");
         }
@@ -107,11 +107,11 @@ public class GroupServiceImpl implements GroupService {
     public GroupDto updateGroupPerson(Long groupId, GroupDto groupDto) {
         GroupDto returnValue = new GroupDto();
         Optional<Group> group = groupRepository.findById(groupId);
-        List<Person> person = personRepository.findByGroupId(group.get().getPerson().getGroupId());
+        List<Person> person = personRepository.findByGroupId(group.get());
         if (group.isEmpty()) {
             throw new RuntimeException("Group doesn't exists");
         }
-        group.get().setPerson((Person) person);
+        group.get().setPersonList(person);
         Group updatedGroup = groupRepository.save(group.get());
         new ModelMapper().map(updatedGroup, GroupDto.class);
         BeanUtils.copyProperties(updatedGroup, returnValue);

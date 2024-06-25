@@ -1,24 +1,14 @@
 package com.example.autosystem.ui.controller;
 
-import com.example.autosystem.io.GroupRepository;
-import com.example.autosystem.io.PersonRepository;
-import com.example.autosystem.io.entity.Group;
-import com.example.autosystem.io.entity.Person;
-import com.example.autosystem.io.entity.Trainer;
 import com.example.autosystem.service.GroupService;
 import com.example.autosystem.service.PersonService;
 import com.example.autosystem.shared.dto.GroupDto;
 import com.example.autosystem.shared.dto.PersonDto;
 import com.example.autosystem.shared.dto.TrainerDto;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/")
@@ -42,11 +32,8 @@ public class PersonController {
         return personService.getPersonById(id);
     }
     @PostMapping("/persons")
-    public PersonDto createPerson(@RequestBody Person person) {
-        PersonDto personDto;
-        if (person.getFirstName() != null && person.getLastName() != null && person.getMiddleName() != null) {
-            ModelMapper modelMapper = new ModelMapper();
-            personDto = modelMapper.map(person, PersonDto.class);
+    public PersonDto createPerson(@RequestBody PersonDto personDto) {
+        if (personDto.getFirstName() != null && personDto.getLastName() != null && personDto.getMiddleName() != null) {
             return personService.createPerson(personDto);
         } else {
             return null;
@@ -54,17 +41,11 @@ public class PersonController {
 
     }
     @PutMapping("/person/{id}")
-    public PersonDto updatePersonAllInfo(@RequestBody Person person, @PathVariable Long id) {
-        PersonDto personDto;
-        ModelMapper modelMapper = new ModelMapper();
-        personDto = modelMapper.map(person, PersonDto.class);
+    public PersonDto updatePersonAllInfo(@RequestBody PersonDto personDto, @PathVariable Long id) {
         return personService.updatePersonAllInfo(id, personDto);
     }
     @PutMapping("/person/{id}/group")
-    public PersonDto updatePersonGroup(@RequestParam @PathVariable Long id, @RequestParam Group groupId) {
-        PersonDto personDto;
-        ModelMapper modelMapper = new ModelMapper();
-        personDto = modelMapper.map(groupId, PersonDto.class);
+    public PersonDto updatePersonGroup(@RequestParam @PathVariable Long id, @RequestParam PersonDto personDto) {
         return personService.updatePersonGroup(id, personDto);
 
     }
@@ -74,10 +55,7 @@ public class PersonController {
         return null;
     }
     @PutMapping("/persons/{id}/status")
-    public PersonDto updatePersonStatus(@RequestParam @PathVariable Long id, @RequestParam Boolean status) {
-        PersonDto personDto;
-        ModelMapper modelMapper = new ModelMapper();
-        personDto = modelMapper.map(status, PersonDto.class);
+    public PersonDto updatePersonStatus(@RequestParam @PathVariable Long id, @RequestParam PersonDto personDto) {
         return personService.updatePersonStatus(id, personDto);
     }
     @DeleteMapping("/persons")
@@ -86,10 +64,7 @@ public class PersonController {
         return null;
     }
     @GetMapping("/persons/trainer")
-    public List<PersonDto> getPersonsByTrainerId(Trainer trainerId) {
-        TrainerDto trainerDto;
-        ModelMapper modelMapper = new ModelMapper();
-        trainerDto = modelMapper.map(trainerId, TrainerDto.class);
+    public List<PersonDto> getPersonsByTrainerId(TrainerDto trainerDto) {
         return personService.getPersonByTrainerId(trainerDto);
     }
     @GetMapping("/persons/status")
